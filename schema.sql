@@ -8,3 +8,4 @@ CREATE TABLE `Orders` (
   `OrderTime` datetime,
   `Item` varchar(100) NOT NULL
 );
+

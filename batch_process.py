@@ -32,3 +32,4 @@ for record in records:
 
 cur.close()
 mydb.close()
+

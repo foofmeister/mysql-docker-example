@@ -1,49 +1,84 @@
-import pandas
 
-##Make Mysql Connection
-import pandas as pd
+"""
+dir_name = 'C:\\SomeDirectory'
+extension = ".zip"
 
+os.chdir(dir_name) # change directory from working dir to dir with files
 
-def create_connection_sql():
-    import mysql.connector
-    mydb = None
-    try:
-        mydb = mysql.connector.connect(
-            host='34.94.143.25',
-            user='root',
-            password='tBKsPvD20ndJ3thg',
-            port='3306',
-            database='db_forest',
-            autocommit=False
-        )
-        print("Connection to MySQL DB successful")
-    except Error as e:
-        print(f"The error '{e}' occurred")
-    return mydb
+for item in os.listdir(dir_name): # loop through items in dir
+    if item.endswith(extension): # check for ".zip" extension
+        file_name = os.path.abspath(item) # get full path of files
+        zip_ref = zipfile.ZipFile(file_name) # create zipfile object
+        zip_ref.extractall(dir_name) # extract file to dir
+        zip_ref.close() # close file
+        os.remove(file_name) # delete zipped file
+"""
 
 ##Artist Data
 ##Create Empty Data Frame
 
-df = pd.DataFrame(columns = ['ID','NAME','URL'])
+import pandas as pd
+import mysql.connector
 
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="password"
+)
+
+cur = mydb.cursor()
+cur.execute("USE DB")
+
+###Function to create table
+def create_table(table_name, table_def):
+    str1 = ""
+    for i in table_def.index:
+        str1 = str1 + i+" "+table_def[i]+",\n"
+    #str = "DROP TABLE IF EXISTS "+table_name+"; \n" \
+    str = "CREATE TABLE "+table_name+" (\n" \
+    ""+str1[:-2] + "\n" \
+    ");"
+    return str
+
+### Read File
+df = pd.DataFrame(columns = ['ID','NAME','URL'])
 with open('artist', 'r') as file:
     importfile = file.read()
 
-print(importfile.count('\n'))
-
-importfile1 = importfile
+###Create dataframe and cleanup columns
 
 df = pd.DataFrame([x.split("\x01")for x in importfile1.split("\x02\n")])
 df = df.rename(columns=df.iloc[0]).drop(df.index[0])
+df.columns = df.columns.str.replace("#", "")
+a = df.loc[2].str.replace("#dbTypes:", "")
+
+###Build Table using pre-defined function above
+
+#drop table
+
+sql_stmt = "DROP TABLE IF EXISTS "+table_name+";"
+cur.execute(sql_stmt)
+mydb.commit()
+
+sql_stmt = create_table("artist",a)
+cur.execute(sql_stmt)
+mydb.commit()
+
+conn_create_table = create_table_connection_mysql()
+a.to_sql('Twitter_Price_Solana', conn_create_table, if_exists='append', index=False)
+
+conn_create_table = create_table_connection_mysql()
+a.to_sql('Twitter_Price_Solana', conn_create_table, if_exists='append', index=False)
 
 
-df[,1]
-        ID = line[0:20]
-        ch = line.find("https")
-        NAME = line[20:ch]
-        URL = line[ch:]
-        #data = {"ID": ID, "NAME": NAME, "URL": URL}
-        df2 = pd.DataFrame({"ID": ID, "NAME": NAME, "URL": URL},index=[0])
-        df = pd.concat([df,df2])
 
-ascii(1)
+
+
+
+
+"""DROP TABLE IF EXISTS `artist`;
+CREATE TABLE `artist` (
+"create table artists"
+
+
+
