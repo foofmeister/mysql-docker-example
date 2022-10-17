@@ -3,9 +3,9 @@ CREATE DATABASE `DB`;
 USE `DB`;
 
 
-DROP TABLE IF EXISTS `Orders`;
-CREATE TABLE `Orders` (
-  `OrderTime` datetime,
-  `Item` varchar(100) NOT NULL
+DROP TABLE IF EXISTS `Dummy`;
+CREATE TABLE `Dummy` (
+  `Dummy_column1` datetime,
+  `Dummy_column2` varchar(100) NOT NULL
 );
 

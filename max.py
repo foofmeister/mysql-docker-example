@@ -1,24 +1,10 @@
 
-"""
-dir_name = 'C:\\SomeDirectory'
-extension = ".zip"
-
-os.chdir(dir_name) # change directory from working dir to dir with files
-
-for item in os.listdir(dir_name): # loop through items in dir
-    if item.endswith(extension): # check for ".zip" extension
-        file_name = os.path.abspath(item) # get full path of files
-        zip_ref = zipfile.ZipFile(file_name) # create zipfile object
-        zip_ref.extractall(dir_name) # extract file to dir
-        zip_ref.close() # close file
-        os.remove(file_name) # delete zipped file
-"""
-
 ##Artist Data
 ##Create Empty Data Frame
 
 import pandas as pd
 import mysql.connector
+#import pymysql
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -28,6 +14,12 @@ mydb = mysql.connector.connect(
 
 cur = mydb.cursor()
 cur.execute("USE DB")
+
+###Create connection to mysql database for creating table
+def create_table_connection_mysql():
+    from sqlalchemy import create_engine
+    my_conn = create_engine("mysql+pymysql://root:password@localhost/DB")
+    return my_conn
 
 ###Function to create table
 def create_table(table_name, table_def):
@@ -41,44 +33,40 @@ def create_table(table_name, table_def):
     return str
 
 ### Read File
-df = pd.DataFrame(columns = ['ID','NAME','URL'])
-with open('artist', 'r') as file:
-    importfile = file.read()
 
-###Create dataframe and cleanup columns
+file_name_list = ["artist","genre","genre_artist"]
 
-df = pd.DataFrame([x.split("\x01")for x in importfile1.split("\x02\n")])
-df = df.rename(columns=df.iloc[0]).drop(df.index[0])
-df.columns = df.columns.str.replace("#", "")
-a = df.loc[2].str.replace("#dbTypes:", "")
+for item in file_name_list:
+    file_name = item
 
-###Build Table using pre-defined function above
+    df = pd.DataFrame(columns = ['ID','NAME','URL'])
+    with open(file_name, 'r') as file:
+        importfile = file.read()
 
-#drop table
+    ###Create dataframe and cleanup columns
 
-sql_stmt = "DROP TABLE IF EXISTS "+table_name+";"
-cur.execute(sql_stmt)
-mydb.commit()
+    df = pd.DataFrame([x.split("\x01")for x in importfile.split("\x02\n")])
+    df = df.rename(columns=df.iloc[0]).drop(df.index[0])
+    df.columns = df.columns.str.replace("#", "")
+    db_types = df.loc[2].str.replace("#dbTypes:", "")
+    df = df[df['export_date'].astype(str).str[0] != "#"].reset_index()
+    del df['index']
+    df = df.dropna()
 
-sql_stmt = create_table("artist",a)
-cur.execute(sql_stmt)
-mydb.commit()
+    #df = df.loc[0:480000]
 
-conn_create_table = create_table_connection_mysql()
-a.to_sql('Twitter_Price_Solana', conn_create_table, if_exists='append', index=False)
+    ###Build Table using pre-defined function above
+    #drop table
 
-conn_create_table = create_table_connection_mysql()
-a.to_sql('Twitter_Price_Solana', conn_create_table, if_exists='append', index=False)
+    sql_stmt = "DROP TABLE IF EXISTS "+file_name+";"
+    cur.execute(sql_stmt)
+    mydb.commit()
 
+    #Create Table
 
+    sql_stmt = create_table(file_name, db_types)
+    cur.execute(sql_stmt)
+    mydb.commit()
 
-
-
-
-
-"""DROP TABLE IF EXISTS `artist`;
-CREATE TABLE `artist` (
-"create table artists"
-
-
-
+    conn_create_table = create_table_connection_mysql()
+    df.to_sql(file_name, conn_create_table, if_exists='append', index=False)
