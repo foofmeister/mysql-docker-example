@@ -38,6 +38,7 @@ file_name_list = ["artist","genre","genre_artist"]
 
 for item in file_name_list:
     file_name = item
+    print(file_name)
 
     df = pd.DataFrame(columns = ['ID','NAME','URL'])
     with open(file_name, 'r') as file:
@@ -52,6 +53,8 @@ for item in file_name_list:
     df = df[df['export_date'].astype(str).str[0] != "#"].reset_index()
     del df['index']
     df = df.dropna()
+    try:
+        df['parent_id'].loc[df['parent_id'] ==""] = 0
 
     #df = df.loc[0:480000]
 

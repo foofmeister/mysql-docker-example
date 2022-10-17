@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
+genre
+genre_artist
+artist
 
 # C extensions
 *.so
