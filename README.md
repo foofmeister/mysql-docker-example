@@ -1,13 +1,32 @@
-# mysql-docker-example
-MySql Docker Demonstration Example
+# Max Instructions
+### Ingest three different files into mysql server, and create queries to access data.
 
-## Build Docker image
-- Start Docker Desktop
-- Build image
-``` batch
+## Set up files: should contain
+
+* view_sql.py
+* Dockerfile
+* max.py
+* schemas.sql
+* requirements.txt 
+
+## Files to Import (unzipped)
+
+* genre
+* artist
+* genre_artist
+
+## Build Docker Image
+
+* Start Docker Desktop
+
+* Build Image in CLI
+
+```shell
 docker build -t local-mysql .
 ```
-- Run container
-``` batch
+
+* Run Container
+
+```shell
 docker run -dp 3306:3306 local-mysql
 ```
