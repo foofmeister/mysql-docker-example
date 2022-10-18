@@ -1,7 +1,7 @@
-#Max Instructions
-###Ingest three different files into mysql server, and create queries to access data.
+# Max Instructions
+### Ingest three different files into mysql server, and create queries to access data.
 
-##Set up files: should contain
+## Set up files: should contain
 
 * view_sql.py
 * Dockerfile
@@ -9,13 +9,13 @@
 * schemas.sql
 * requirements.txt 
 
-##Files to Import (unzipped)
+## Files to Import (unzipped)
 
 * genre
 * artist
 * genre_artist
 
-##Build Docker Image
+## Build Docker Image
 
 * Start Docker Desktop
 
