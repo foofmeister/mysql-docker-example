@@ -9,11 +9,15 @@
 * schemas.sql
 * requirements.txt 
 
-##Files to Import (unzipped)
+##Files to Import (make sure to unzip files first)
 
 * genre
 * artist
 * genre_artist
+
+##File Instructions
+
+* Put all files in one folder
 
 ##Build Docker Image
 
@@ -30,3 +34,15 @@ docker build -t local-mysql .
 ```shell
 docker run -dp 3306:3306 local-mysql
 ```
+
+##Ensure you have python requirements
+
+* cd into folder where file instructions are kept, then run following command.  
+* Depending on what version of python you are using, you might need to use pip3
+
+
+```shell
+pip install -r requirements
+```
+
+

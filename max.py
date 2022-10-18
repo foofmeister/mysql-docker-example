@@ -4,7 +4,7 @@
 
 import pandas as pd
 import mysql.connector
-#import pymysql
+import pymysql
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -54,7 +54,9 @@ for item in file_name_list:
     del df['index']
     df = df.dropna()
     try:
-        df['parent_id'].loc[df['parent_id'] ==""] = 0
+        df['parent_id'].loc[df['parent_id'] == ""] = 0
+    except:
+        pass
 
     #df = df.loc[0:480000]
 
