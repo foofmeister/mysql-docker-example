@@ -1,5 +1,5 @@
 import mysql.connector
-import pandas as pd
+
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -10,25 +10,24 @@ mydb = mysql.connector.connect(
 cur = mydb.cursor()
 cur.execute("USE DB")
 
-#sql_stmt = f"SELECT * FROM artist"
+sql_stmt = """
+select a.name as Artist_Name,
+	   view_url as Apple_URL, 
+       g.name as Genre
+from DB.artist a
+	left outer join 
+			(select * from (select ROW_NUMBER() OVER (partition by artist_id order by is_primary desc) 
+					row_num,artist_id,genre_id,is_primary  from DB.genre_artist) a
+			where row_num = 1 ) ga on a.artist_id = ga.artist_id
+    left outer join DB.genre g on ga.genre_id = g.genre_id
+    where a.is_actual_artist = 1"""
 
-#cur.execute(sql_stmt)
-#response = cur.fetchall()
+cur.execute(sql_stmt)
+response = cur.fetchall()
 
-#for row in response:
-#    print(row[0], row[1],row[2],)
+for row in response:
+    print(row[0], row[1],row[2],)
 
-#cur.close()
-#mydb.close()
+cur.close()
+mydb.close()
 
-
-df = pd.read_sql_query(
-        "select * from artist", mydb)
-
-
-
-df2 = pd.read_sql_query(
-        "select * from genre", mydb)
-
-df3 = pd.read_sql_query(
-        "select * from genre_artist", mydb)
